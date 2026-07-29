@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tiny Poly World</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="airplane.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="hud">
+      <h1>★ Tiny Poly World</h1>
+      <p>Mouse, touch, or arrow keys steer the plane — then switch the view or map!</p>
+      <div id="controls">
+        <button class="map-btn active" data-map="forest">Forest</button>
+        <button class="map-btn" data-map="spring">Spring</button>
+        <button class="map-btn" data-map="night">Night</button>
+        <button class="map-btn" data-map="aurora">Aurora</button>
+        <button class="map-btn" data-map="sunset">Sunset</button>
+        <button id="view-cycle">View: Follow</button>
+      </div>
+    </div>
+    <div id="joystick">
+      <div id="joystick-handle"></div>
+    </div>
+    <div id="world"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
