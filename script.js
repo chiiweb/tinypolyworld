@@ -389,26 +389,41 @@ SakuraTree = function () {
 	this.mesh.add(topCluster);
 }
 
-// --- Tulip flower, for the spring map ---------------------------------------
-TulipFlower = function () {
+// --- Aurora tree - pale, slender, hung with glowing orbs instead of leaves,
+// for the aurora map (distinct from night's boxy crystal tree) ---------------
+AuroraTree = function () {
 
 	this.mesh = new THREE.Object3D();
 
-	var stemMat = new THREE.MeshPhongMaterial({ color: 0x4f8a3d, shading: THREE.FlatShading });
-	var stem = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 24, 5), stemMat);
-	stem.position.y = 12;
-	this.mesh.add(stem);
+	var trunkMat = new THREE.MeshPhongMaterial({ color: 0xdfeaf5, shading: THREE.FlatShading });
+	var trunk = new THREE.Mesh(new THREE.CylinderGeometry(3, 5, 60, 6), trunkMat);
+	trunk.position.y = 30;
+	this.mesh.add(trunk);
 
-	var tulipColors = [0xe0416b, 0xff8fa3, 0xf6c945, 0x9d6fd1, 0xffffff];
-	var petalMat = new THREE.MeshPhongMaterial({ color: tulipColors[Math.floor(Math.random() * tulipColors.length)], shading: THREE.FlatShading });
-	var nPetals = 6;
-	for (var i = 0; i < nPetals; i++) {
-		var a = (i / nPetals) * Math.PI * 2;
-		var petal = new THREE.Mesh(new THREE.SphereGeometry(4, 6, 5, 0, Math.PI * 2, 0, Math.PI * 0.7), petalMat);
-		petal.position.set(Math.cos(a) * 2, 26, Math.sin(a) * 2);
-		petal.scale.set(1, 1.6, 1);
-		petal.rotation.x = Math.PI * 0.15;
-		this.mesh.add(petal);
+	// a few slender branches fanning out near the top
+	var nBranches = 3;
+	for (var b = 0; b < nBranches; b++) {
+		var branch = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 2.5, 26, 5), trunkMat);
+		var ba = (b / nBranches) * Math.PI * 2;
+		branch.position.set(Math.cos(ba) * 6, 52, Math.sin(ba) * 6);
+		branch.rotation.z = Math.cos(ba) * 0.6;
+		branch.rotation.x = Math.sin(ba) * 0.6;
+		this.mesh.add(branch);
+	}
+
+	// glowing orbs standing in for leaves, in aurora colors
+	var colors = [0x6fffb0, 0xb98cff, 0xff7fc6, 0x8eecf5];
+	var nOrbs = 10;
+	for (var i = 0; i < nOrbs; i++) {
+		var orbColor = colors[Math.floor(Math.random() * colors.length)];
+		var orb = new THREE.Mesh(
+			new THREE.SphereGeometry(4 + Math.random() * 2, 8, 6),
+			new THREE.MeshBasicMaterial({ color: orbColor, transparent: true, opacity: 0.9 })
+		);
+		var oa = Math.random() * Math.PI * 2;
+		var r = 12 + Math.random() * 14;
+		orb.position.set(Math.cos(oa) * r, 45 + Math.random() * 30, Math.sin(oa) * r);
+		this.mesh.add(orb);
 	}
 }
 
@@ -1053,19 +1068,19 @@ function createSpringScene() {
 	var ring = new THREE.Object3D();
 
 	// sakura (cherry blossom) trees dotted around the ring
-	ring.add(scatterOnRing(10, 605, function () {
+	ring.add(scatterOnRing(28, 605, function () {
 		var tree = new SakuraTree();
 		var s = 0.8 + Math.random() * 0.5;
 		tree.mesh.scale.set(s, s, s);
 		return tree.mesh;
 	}));
 
-	// tulips in mixed spring colors carpeting the ground
+	// lily of the valley carpeting the ground beneath the sakura trees
 	ring.add(scatterOnRing(32, 605, function () {
-		var tulip = new TulipFlower();
-		var s = 0.8 + Math.random() * 0.6;
-		tulip.mesh.scale.set(s, s, s);
-		return tulip.mesh;
+		var lily = new LilyOfValley();
+		var s = 0.9 + Math.random() * 0.6;
+		lily.mesh.scale.set(s, s, s);
+		return lily.mesh;
 	}));
 
 	return { backdrop: null, ring: ring };
@@ -1134,15 +1149,25 @@ function createAuroraScene() {
 	glow2.position.set(0, 130, -320);
 	auroraGroup.add(glow2);
 
+	var ring = new THREE.Object3D();
+
+	// pale, glowing-orbed aurora trees dotted around the ring
+	ring.add(scatterOnRing(8, 605, function () {
+		var tree = new AuroraTree();
+		var s = 0.8 + Math.random() * 0.5;
+		tree.mesh.scale.set(s, s, s);
+		return tree.mesh;
+	}));
+
 	// glowing flowers on the ground, in aurora colors rather than the
 	// standard red/yellow/blue forest palette
-	var ring = scatterOnRing(26, 605, function () {
+	ring.add(scatterOnRing(26, 605, function () {
 		var flowerColor = colors[Math.floor(Math.random() * colors.length)];
 		var auroraFlower = new AuroraFlower(flowerColor);
 		var fs = 0.9 + Math.random() * 0.8;
 		auroraFlower.mesh.scale.set(fs, fs, fs);
 		return auroraFlower.mesh;
-	});
+	}));
 
 	return { backdrop: auroraGroup, ring: ring };
 }
